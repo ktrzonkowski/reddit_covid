@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "reddit_covid"
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+requests = "^2.24.0"
+click = "^7.1.2"
+pandas = "^1.0.5"
+matplotlib = "^3.2.2"
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+reddit_covid = "reddit_covid:main"
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
