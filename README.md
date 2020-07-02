@@ -5,3 +5,10 @@ way that is easily accessible to everyone.
 
 The purpose of this project is to create a simple image to post to US State reddit communities to keep everyone aware
 and informed.
+
+
+----
+
+# Running
+
+This project uses [_poetry_](https://python-poetry.org/). You can run the main method using `poetry run reddit_covid`.
