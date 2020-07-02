@@ -154,8 +154,20 @@ brotli = ["brotlipy (>=0.6.0)"]
 secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "pyOpenSSL (>=0.14)", "ipaddress"]
 socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7,<2.0)"]
 
+[[package]]
+category = "main"
+description = "Ctypes-based simple MagickWand API binding for Python"
+name = "wand"
+optional = false
+python-versions = "*"
+version = "0.6.1"
+
+[package.extras]
+doc = ["Sphinx (>=2.4.1)"]
+test = ["pytest (>=5.3.5)"]
+
 [metadata]
-content-hash = "4da29c56683a089aa3f10a25b724919ba8011e936bf6847f81ef1af41beef3dc"
+content-hash = "5f067a90efd80aa5526d20a4145a5f07436c3da589cbef3a5e585e9eee206525"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -284,4 +296,8 @@ six = [
 urllib3 = [
     {file = "urllib3-1.25.9-py2.py3-none-any.whl", hash = "sha256:88206b0eb87e6d677d424843ac5209e3fb9d0190d0ee169599165ec25e9d9115"},
     {file = "urllib3-1.25.9.tar.gz", hash = "sha256:3018294ebefce6572a474f0604c2021e33b3fd8006ecd11d62107a5d2a963527"},
+]
+wand = [
+    {file = "Wand-0.6.1-py2.py3-none-any.whl", hash = "sha256:d5b75ac13d7485032970926415648586eafeeb1eb62ed6ebd0778358cf9d70e0"},
+    {file = "Wand-0.6.1.tar.gz", hash = "sha256:df0780b1b54938a43d29279a6588fde11e349550c8958a673d57c26a3e6de7f1"},
 ]

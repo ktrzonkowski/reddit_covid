@@ -1,19 +1,29 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import io
 
 state = "nc"
 
 
 def graph(df):
+    """
+    Builds the graph of two 2 week periods of positive COVID-19 cases.
+    """
     ax = plt.gca()
     ax.set_axis_off()
     df[:28].plot(
         x='date', y='positiveIncrease', linewidth=2.0, color='blue', ax=ax)
     plt.legend('', frameon=False)
-    plt.show()
+    f = io.BytesIO()
+    plt.savefig(f)
+    return f.getvalue()
 
 
 def fetch():
+    """
+    Fetches data from covidtracking.com. A data API run by The Atlantic.
+    Returns a dataframe indexed by date.
+    """
     daily = pd.read_csv(
         f'https://covidtracking.com/api/v1/states/{state}/daily.csv')
 
@@ -23,4 +33,4 @@ def fetch():
 
     print(daily.info())
     print(daily.head())
-    graph(daily)
+    return daily
