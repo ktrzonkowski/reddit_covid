@@ -5,24 +5,44 @@ import math
 import matplotlib.pyplot as plt
 import io
 
+baseW = 504
+baseH = 384
+
 
 def graph(df):
     """
     Builds the graph of two 2 week periods of positive COVID-19 cases.
     """
-    fig = plt.figure(frameon=True, figsize=(1.5, .5), dpi=200)
-    ax = fig.add_axes((0., 0., .95, 1))
-    ax.set_axis_off()
-    df[::-1].plot.bar(None, ['positiveIncrease'],
-                      stacked=True, ax=ax, rot=0, color=['b', 'r'])
-    plt.legend('', frameon=False)
+
+    posIncrease = df['positiveIncrease']
+    yticks = [
+        posIncrease.min(),
+        posIncrease.median(),
+        posIncrease.max()
+    ]
+
+    reversed = df[::-1]
+    plt.style.use('seaborn')
+    plt.bar(reversed['date'], reversed['positiveIncrease'], color='#d38fc5')
+    plt.tick_params(
+        axis='x',          # changes apply to the x-axis
+        which='both',      # both major and minor ticks are affected
+        bottom=False,      # ticks along the bottom edge are off
+        top=False,         # ticks along the top edge are off
+        labelbottom=False)  # labels along the bottom edge are off
+    plt.tick_params(
+        axis='y',
+        which='both',
+        labelleft=False,
+        labelright=True
+    )
+    fig_size = plt.gcf().get_size_inches()
+    sizefactor = 0.5
+    plt.gcf().set_size_inches(sizefactor * fig_size)
+
     f = io.BytesIO()
     plt.savefig(f)
     return f.getvalue()
-
-
-baseW = 504
-baseH = 384
 
 
 def build_image(graph_blob, df):
@@ -33,7 +53,7 @@ def build_image(graph_blob, df):
     with Image(width=baseW, height=baseH, background='#ffffff') as base:
         with Image(blob=graph_blob) as grph:
             base.composite(grph, math.floor(
-                baseW / 5), math.floor(baseH / 2))
+                baseW / 12), math.floor(baseH / 5))
 
         draw_header(base)
         base.format = 'png'
@@ -44,7 +64,7 @@ def draw_header(base):
 
     # Draw a header background.
     with Drawing() as draw:
-        draw.fill_color = '#7FFF00'
+        draw.fill_color = '#d38fc5'
         draw.rectangle(left=0, top=0, width=baseW, height=math.floor(baseH/8))
         draw(base)
 
