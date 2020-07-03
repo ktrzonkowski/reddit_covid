@@ -1,6 +1,7 @@
 from wand.image import Image
 from wand.display import display
 from wand.drawing import Drawing
+import datetime
 import math
 import matplotlib.pyplot as plt
 import io
@@ -83,8 +84,8 @@ def draw_subheader(base, firstDate, lastDate):
         draw.fill_color = '#5254C7'
 
         subheadings = [
-            f'14 days ending in {firstDate}',
-            f'14 days ending in {lastDate}'
+            '14 days ending in {}'.format(firstDate.strftime('%b %d, %Y')),
+            '14 days ending in {}'.format(lastDate.strftime('%b %d, %Y'))
         ]
 
         for i in range(2):
