@@ -13,7 +13,7 @@ def graph(df):
     fig = plt.figure(frameon=False, figsize=(4., .5), dpi=100)
     ax = fig.add_axes((0., 0., .95, 1))
     ax.set_axis_off()
-    df[:28].plot(
+    df.plot(
         x='date', y='positiveIncrease', linewidth=2.0, color='blue', ax=ax)
     plt.legend('', frameon=False)
     f = io.BytesIO()
