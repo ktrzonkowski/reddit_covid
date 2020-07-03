@@ -10,3 +10,4 @@ def main():
     for state in constants.stateConfig.keys():
         df = fetch.fetch(state)
         present.build_image(present.graph(df), constants.stateConfig[state])
+        post(constants.stateConfig[state])
