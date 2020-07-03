@@ -33,17 +33,26 @@ def build_image(graph_blob, df):
     firstDate = df['date'][0]
     lastDate = df['date'][28]
 
-    with Drawing() as draw:
-        with Image(width=baseW, height=baseH) as base:
-            with Image(blob=graph_blob) as grph:
-                base.composite(grph, math.floor(
-                    baseW / 8), math.floor(baseH / 2))
+    with Image(width=baseW, height=baseH, background='#ffffff') as base:
+        with Image(blob=graph_blob) as grph:
+            base.composite(grph, math.floor(
+                baseW / 8), math.floor(baseH / 2))
 
-            draw.font_size = 40
-            draw.text(0,
-                      40, 'Hello, world!')
-            draw.text(0, 80, f'{firstDate}')
-            draw.text(0, 120, f'{lastDate}')
-            draw(base)
-            base.format = 'jpeg'
-            base.save(filename='fig.jpg')
+        draw_header(base)
+        base.format = 'png'
+        base.save(filename='fig.png')
+
+
+def draw_header(base):
+
+    # Draw a header background.
+    with Drawing() as draw:
+        draw.fill_color = '#7FFF00'
+        draw.rectangle(left=0, top=0, width=baseW, height=math.floor(baseH/8))
+        draw(base)
+
+    # Layer header text ontop of background.
+    with Drawing() as draw:
+        draw.font_size = 16
+        draw.text(0, 40, 'COVID-19 in North Carolina: Daily Case Increases')
+        draw(base)
