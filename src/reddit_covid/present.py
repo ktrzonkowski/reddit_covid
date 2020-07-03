@@ -10,19 +10,12 @@ def graph(df):
     """
     Builds the graph of two 2 week periods of positive COVID-19 cases.
     """
-    fig = plt.figure(frameon=True, figsize=(4., .5))
+    fig = plt.figure(frameon=True, figsize=(1.5, .5), dpi=200)
     ax = fig.add_axes((0., 0., .95, 1))
     ax.set_axis_off()
-    yticks = [
-        df.min(),
-        df.median(),
-        df.max()
-    ]
-    df.plot(linewidth=2.0, color='blue', ax=ax)
+    df[::-1].plot.bar(None, ['positiveIncrease'],
+                      stacked=True, ax=ax, rot=0, color=['b', 'r'])
     plt.legend('', frameon=False)
-    yabs_max = abs(max(ax.get_ylim(), key=abs))
-    ax.axhline(color='black', zorder=-1)
-    ax.set_ylim(ymin=-yabs_max, ymax=yabs_max)
     f = io.BytesIO()
     plt.savefig(f)
     return f.getvalue()
@@ -40,7 +33,7 @@ def build_image(graph_blob, df):
     with Image(width=baseW, height=baseH, background='#ffffff') as base:
         with Image(blob=graph_blob) as grph:
             base.composite(grph, math.floor(
-                baseW / 8), math.floor(baseH / 2))
+                baseW / 5), math.floor(baseH / 2))
 
         draw_header(base)
         base.format = 'png'
@@ -58,5 +51,5 @@ def draw_header(base):
     # Layer header text ontop of background.
     with Drawing() as draw:
         draw.font_size = 16
-        draw.text(0, 40, 'COVID-19 in North Carolina: Percent Increase')
+        draw.text(0, 40, 'COVID-19 in North Carolina: New Cases Daily')
         draw(base)

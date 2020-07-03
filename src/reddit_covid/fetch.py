@@ -16,9 +16,4 @@ def fetch():
     daily["date"] = pd.to_datetime(daily["date"], format="%Y%m%d")
     daily = daily.set_index(pd.DatetimeIndex(daily['date']))
     daily = daily.truncate(after=datetime(2020, 4, 6))
-    daily["pct_change"] = daily['positiveIncrease'].pct_change(
-        periods=1, freq='D')
-    dailyNoNA = daily['pct_change'].dropna()
-
-    print(dailyNoNA)
-    return dailyNoNA
+    return daily
