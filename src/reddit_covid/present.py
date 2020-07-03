@@ -71,6 +71,6 @@ def draw_header(base):
 
     # Layer header text ontop of background.
     with Drawing() as draw:
-        draw.font_size = 16
-        draw.text(0, 40, 'COVID-19 in North Carolina: New Cases Daily')
+        draw.font_size = 24
+        draw.text(0, 36, 'COVID-19 in North Carolina: New Cases Daily')
         draw(base)
