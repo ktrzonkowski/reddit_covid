@@ -26,8 +26,6 @@ baseH = 384
 headerH = math.floor(baseH/8)
 subheaderH = math.floor(baseH/10)
 
-currentX = 0
-
 def build_image(graph_blob, df):
     """
     Using the graph data from before, and the data frame we want to build an
@@ -42,7 +40,7 @@ def build_image(graph_blob, df):
                 baseW / 8), math.floor(baseH / 2))
 
         draw_header(base)
-        draw_subheader(base)
+        draw_subheader(base, firstDate, lastDate)
 
         base.format = 'png'
         base.save(filename='fig.png')
@@ -69,7 +67,7 @@ def draw_header(base):
         draw.text(10, verticalAlign, heading)
         draw(base)
 
-def draw_subheader(base):
+def draw_subheader(base, firstDate, lastDate):
 
     # Draw subheader bottom border
     with Drawing() as draw:
@@ -85,8 +83,8 @@ def draw_subheader(base):
         draw.fill_color = '#5254C7'
 
         subheadings = [
-            "14 days ending in Jun 17, 2020",
-            "14 days ending in Jul 1, 2020"
+            f'14 days ending in {firstDate}',
+            f'14 days ending in {lastDate}'
         ]
 
         for i in range(2):
