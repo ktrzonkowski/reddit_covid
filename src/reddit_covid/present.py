@@ -20,10 +20,13 @@ def graph(df):
     plt.savefig(f)
     return f.getvalue()
 
-
 baseW = 504
 baseH = 384
 
+headerH = math.floor(baseH/8)
+subheaderH = math.floor(baseH/10)
+
+currentX = 0
 
 def build_image(graph_blob, df):
     """
@@ -39,6 +42,8 @@ def build_image(graph_blob, df):
                 baseW / 8), math.floor(baseH / 2))
 
         draw_header(base)
+        draw_subheader(base)
+
         base.format = 'png'
         base.save(filename='fig.png')
 
@@ -47,12 +52,65 @@ def draw_header(base):
 
     # Draw a header background.
     with Drawing() as draw:
-        draw.fill_color = '#7FFF00'
-        draw.rectangle(left=0, top=0, width=baseW, height=math.floor(baseH/8))
+        draw.fill_color = '#32B332'
+        draw.rectangle(left=0, top=0, width=baseW, height=headerH)
         draw(base)
 
     # Layer header text ontop of background.
     with Drawing() as draw:
-        draw.font_size = 16
-        draw.text(0, 40, 'COVID-19 in North Carolina: Daily Case Increases')
+        fontSize = 20
+
+        heading = "COVID-19 in North Carolina: Daily Case Increases"
+
+        (verticalAlign, horizontalAlign) = calculate_alignment(base, draw, headerH, baseW, heading)
+
+        draw.font_size = fontSize
+        draw.fill_color = '#E4FFE3'
+        draw.text(10, verticalAlign, heading)
         draw(base)
+
+def draw_subheader(base):
+
+    # Draw subheader bottom border
+    with Drawing() as draw:
+        draw.fill_color = '#3C3C3C'
+        draw.rectangle(left=0, top=(headerH + subheaderH), width=baseW, height=5)
+        draw(base)
+
+    # Apply subheaders
+    with Drawing() as draw:
+        fontSize = 14
+
+        draw.font_size = fontSize
+        draw.fill_color = '#5254C7'
+
+        subheadings = [
+            "14 days ending in Jun 17, 2020",
+            "14 days ending in Jul 1, 2020"
+        ]
+
+        for i in range(2):
+            (verticalAlign, horizontalAlign) = calculate_alignment(base, draw, subheaderH, math.floor(baseW/2), subheadings[i])
+
+            # Print a subheading on the left or right side
+            # left  = (baseW / 2) * 0
+            # right = (baseW / 2) * 1
+            draw.text(math.floor(baseW/2*i) + horizontalAlign, headerH + verticalAlign, subheadings[i])
+            draw(base)
+
+def calculate_alignment(base, draw, height, width, text):
+    """
+    Calculate the vertical and horizontal aligment values
+    necessary to center given text in a specific area.
+    """
+    metrics = draw.get_font_metrics(base, text)
+
+    # Vertical alignment calculation
+    # half height + half text height
+    verticalAlign = math.floor( (height/2) + (metrics.text_height/2) )
+
+    # Horizontal alignment calculation
+    # half width - half text width
+    horizontalAlign = math.floor( (width/2) - (metrics.text_width/2) )
+
+    return ( verticalAlign, horizontalAlign )
