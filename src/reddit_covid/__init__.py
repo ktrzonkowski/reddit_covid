@@ -7,4 +7,4 @@ from . import present
 def main():
     df = fetch.fetch()
 
-    present.build_image(fetch.graph(df), df)
+    present.build_image(present.graph(df), df)
