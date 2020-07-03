@@ -1,10 +1,8 @@
 import pandas as pd
 from datetime import datetime
 
-state = "nc"
 
-
-def fetch():
+def fetch(state):
     """
     Fetches data from covidtracking.com. A data API run by The Atlantic.
     Returns a dataframe indexed by date.

@@ -10,10 +10,6 @@ baseH = 384
 
 
 def graph(df):
-    """
-    Builds the graph of two 2 week periods of positive COVID-19 cases.
-    """
-
     posIncrease = df['positiveIncrease']
     yticks = [
         posIncrease.min(),
@@ -46,7 +42,7 @@ def graph(df):
     return f.getvalue()
 
 
-def build_image(graph_blob, df):
+def build_image(graph_blob, conf):
     """
     Using the graph data from before, and the data frame we want to build an
     easily digestible image showing key metrics to help assess current status.
@@ -56,12 +52,12 @@ def build_image(graph_blob, df):
             base.composite(grph, math.floor(
                 baseW / 7), math.floor(baseH / 5))
 
-        draw_header(base)
+        draw_header(base, conf)
         base.format = 'png'
-        base.save(filename='fig.png')
+        base.save(filename=f"fig-{conf['name'].replace(' ','_')}.png")
 
 
-def draw_header(base):
+def draw_header(base, conf):
 
     # Draw a header background.
     with Drawing() as draw:
@@ -72,5 +68,5 @@ def draw_header(base):
     # Layer header text ontop of background.
     with Drawing() as draw:
         draw.font_size = 24
-        draw.text(0, 36, 'COVID-19 in North Carolina: New Cases Daily')
+        draw.text(0, 36, f"COVID-19 in {conf['name']}: New Cases Daily")
         draw(base)
