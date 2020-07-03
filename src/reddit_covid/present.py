@@ -23,7 +23,8 @@ def graph(df):
 
     reversed = df[::-1]
     plt.style.use('seaborn')
-    plt.bar(reversed['date'], reversed['positiveIncrease'], color='#d38fc5')
+    plt.stackplot(reversed['date'],
+                  reversed['positiveIncrease'], color='#d38fc5')
     plt.tick_params(
         axis='x',          # changes apply to the x-axis
         which='both',      # both major and minor ticks are affected
@@ -41,7 +42,7 @@ def graph(df):
     plt.gcf().set_size_inches(sizefactor * fig_size)
 
     f = io.BytesIO()
-    plt.savefig(f)
+    plt.savefig(f, bbox_inches='tight')
     return f.getvalue()
 
 
@@ -53,7 +54,7 @@ def build_image(graph_blob, df):
     with Image(width=baseW, height=baseH, background='#ffffff') as base:
         with Image(blob=graph_blob) as grph:
             base.composite(grph, math.floor(
-                baseW / 12), math.floor(baseH / 5))
+                baseW / 7), math.floor(baseH / 5))
 
         draw_header(base)
         base.format = 'png'
