@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import datetime
 
 state = "nc"
 
@@ -14,9 +15,10 @@ def fetch():
     daily["date"] = daily["date"].apply(str)
     daily["date"] = pd.to_datetime(daily["date"], format="%Y%m%d")
     daily = daily.set_index(pd.DatetimeIndex(daily['date']))
+    daily = daily.truncate(after=datetime(2020, 4, 6))
     daily["pct_change"] = daily['positiveIncrease'].pct_change(
-        periods=2, freq='2W')
+        periods=1, freq='D')
+    dailyNoNA = daily['pct_change'].dropna()
 
-    print(daily.info())
-    print(daily.head())
-    return daily
+    print(dailyNoNA)
+    return dailyNoNA

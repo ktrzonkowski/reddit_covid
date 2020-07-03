@@ -10,12 +10,19 @@ def graph(df):
     """
     Builds the graph of two 2 week periods of positive COVID-19 cases.
     """
-    fig = plt.figure(frameon=False, figsize=(4., .5), dpi=100)
+    fig = plt.figure(frameon=True, figsize=(4., .5))
     ax = fig.add_axes((0., 0., .95, 1))
     ax.set_axis_off()
-    df.plot(
-        x='date', y='positiveIncrease', linewidth=2.0, color='blue', ax=ax)
+    yticks = [
+        df.min(),
+        df.median(),
+        df.max()
+    ]
+    df.plot(linewidth=2.0, color='blue', ax=ax)
     plt.legend('', frameon=False)
+    yabs_max = abs(max(ax.get_ylim(), key=abs))
+    ax.axhline(color='black', zorder=-1)
+    ax.set_ylim(ymin=-yabs_max, ymax=yabs_max)
     f = io.BytesIO()
     plt.savefig(f)
     return f.getvalue()
@@ -30,9 +37,6 @@ def build_image(graph_blob, df):
     Using the graph data from before, and the data frame we want to build an
     easily digestible image showing key metrics to help assess current status.
     """
-    firstDate = df['date'][0]
-    lastDate = df['date'][28]
-
     with Image(width=baseW, height=baseH, background='#ffffff') as base:
         with Image(blob=graph_blob) as grph:
             base.composite(grph, math.floor(
@@ -54,5 +58,5 @@ def draw_header(base):
     # Layer header text ontop of background.
     with Drawing() as draw:
         draw.font_size = 16
-        draw.text(0, 40, 'COVID-19 in North Carolina: Daily Case Increases')
+        draw.text(0, 40, 'COVID-19 in North Carolina: Percent Increase')
         draw(base)
