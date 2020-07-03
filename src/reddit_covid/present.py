@@ -33,9 +33,7 @@ def graph(df):
         labelleft=False,
         labelright=True
     )
-    fig_size = plt.gcf().get_size_inches()
-    sizefactor = 0.5
-    plt.gcf().set_size_inches(sizefactor * fig_size)
+    plt.gcf().set_size_inches(4, 3)
 
     f = io.BytesIO()
     plt.savefig(f, bbox_inches='tight')
