@@ -41,6 +41,7 @@ def graph(df):
 
 headerH = math.floor(baseH/8)
 subheaderH = math.floor(baseH/12)
+totalsH = math.floor(baseH/8)
 
 def build_image(graph_blob, conf, data):
     """
@@ -52,11 +53,12 @@ def build_image(graph_blob, conf, data):
             base.composite(
                     grph,
                     math.floor(baseW / 7),
-                    headerH + subheaderH + 50
+                    headerH + subheaderH + totalsH
                 )
 
         draw_header(base, conf)
         draw_subheader(base, data)
+        draw_totals(base, data)
 
         base.format = 'png'
         base.save(filename=f"fig-{conf['name'].replace(' ','_')}.png")
@@ -72,8 +74,6 @@ def draw_header(base, conf):
 
     # Layer header text ontop of background.
     with Drawing() as draw:
-        fontSize = 20
-
         heading = f"COVID-19 in {conf['name']}: New Cases Daily"
 
         (verticalAlign, horizontalAlign) = calculate_alignment(
@@ -84,7 +84,7 @@ def draw_header(base, conf):
                 heading
             )
 
-        draw.font_size = fontSize
+        draw.font_size = 20
         draw.fill_color = '#E4FFE3'
         draw.text(10, verticalAlign, heading)
         draw(base)
@@ -98,9 +98,7 @@ def draw_subheader(base, data):
 
     # Apply subheaders
     with Drawing() as draw:
-        fontSize = 14
-
-        draw.font_size = fontSize
+        draw.font_size = 14
         draw.fill_color = '#5254C7'
 
         dateFormat = '%b %d, %Y'
@@ -130,6 +128,38 @@ def draw_subheader(base, data):
                     math.floor(baseW/2*i) + horizontalAlign,
                     headerH + verticalAlign,
                     subheadings[i]
+                )
+            draw(base)
+
+def draw_totals(base, data):
+    with Drawing() as draw:
+        draw.font_size = 28
+        draw.fill_color = '#474747'
+        
+        totals = [
+            data['positive'][0] - data['positive'][13],
+            data['positive'][14] - data['positive'][27]
+        ]
+
+        for i in range(2):
+            # Format to comma-separated integer string
+            totals[i] = f'{totals[i]:,}'
+
+            (verticalAlign, horizontalAlign) = calculate_alignment(
+                    base,
+                    draw,
+                    totalsH,
+                    math.floor(baseW/2),
+                    totals[i]
+                )
+            
+            # Print a total on the left or right side
+            # left  = (baseW / 2) * 0
+            # right = (baseW / 2) * 1
+            draw.text(
+                    math.floor(baseW/2*i) + horizontalAlign,
+                    headerH + subheaderH + verticalAlign,
+                    totals[i]
                 )
             draw(base)
 
