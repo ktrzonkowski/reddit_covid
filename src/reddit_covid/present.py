@@ -40,20 +40,23 @@ def graph(df):
     return f.getvalue()
 
 headerH = math.floor(baseH/8)
-subheaderH = math.floor(baseH/10)
+subheaderH = math.floor(baseH/12)
 
-def build_image(graph_blob, conf):
+def build_image(graph_blob, conf, data):
     """
     Using the graph data from before, and the data frame we want to build an
     easily digestible image showing key metrics to help assess current status.
     """
     with Image(width=baseW, height=baseH, background='#ffffff') as base:
         with Image(blob=graph_blob) as grph:
-            base.composite(grph, math.floor(
-                baseW / 7), math.floor(baseH / 5))
+            base.composite(
+                    grph,
+                    math.floor(baseW / 7),
+                    headerH + subheaderH + 50
+                )
 
-        draw_header(base)
-        draw_subheader(base, firstDate, lastDate)
+        draw_header(base, conf)
+        draw_subheader(base, data)
 
         base.format = 'png'
         base.save(filename=f"fig-{conf['name'].replace(' ','_')}.png")
@@ -69,19 +72,24 @@ def draw_header(base, conf):
 
     # Layer header text ontop of background.
     with Drawing() as draw:
-        fontSize = 24
+        fontSize = 20
 
         heading = f"COVID-19 in {conf['name']}: New Cases Daily"
 
-        (verticalAlign, horizontalAlign) = calculate_alignment(base, draw, headerH, baseW, heading)
+        (verticalAlign, horizontalAlign) = calculate_alignment(
+                base,
+                draw,
+                headerH,
+                baseW,
+                heading
+            )
 
         draw.font_size = fontSize
         draw.fill_color = '#E4FFE3'
         draw.text(10, verticalAlign, heading)
         draw(base)
 
-def draw_subheader(base, firstDate, lastDate):
-
+def draw_subheader(base, data):
     # Draw subheader bottom border
     with Drawing() as draw:
         draw.fill_color = '#3C3C3C'
@@ -95,18 +103,34 @@ def draw_subheader(base, firstDate, lastDate):
         draw.font_size = fontSize
         draw.fill_color = '#5254C7'
 
+        dateFormat = '%b %d, %Y'
+
         subheadings = [
-            '14 days ending in {}'.format(lastDate.strftime('%b %d, %Y')),
-            '14 days ending in {}'.format(firstDate.strftime('%b %d, %Y'))
+            '14 days ending {}'.format(
+                    data['date'][0].strftime(dateFormat)
+                ),
+            '14 days ending {}'.format(
+                    data['date'][27].strftime(dateFormat)
+                )
         ]
 
         for i in range(2):
-            (verticalAlign, horizontalAlign) = calculate_alignment(base, draw, subheaderH, math.floor(baseW/2), subheadings[i])
+            (verticalAlign, horizontalAlign) = calculate_alignment(
+                    base,
+                    draw,
+                    subheaderH,
+                    math.floor(baseW/2),
+                    subheadings[i]
+                )
 
             # Print a subheading on the left or right side
             # left  = (baseW / 2) * 0
             # right = (baseW / 2) * 1
-            draw.text(math.floor(baseW/2*i) + horizontalAlign, headerH + verticalAlign, subheadings[i])
+            draw.text(
+                    math.floor(baseW/2*i) + horizontalAlign,
+                    headerH + verticalAlign,
+                    subheadings[i]
+                )
             draw(base)
 
 def calculate_alignment(base, draw, height, width, text):
