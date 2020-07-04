@@ -68,7 +68,7 @@ def draw_header(base, conf):
 
     # Draw a header background.
     with Drawing() as draw:
-        draw.fill_color = '#d38fc5'
+        draw.fill_color = '#32B332'
         draw.rectangle(left=0, top=0, width=baseW, height=math.floor(baseH/8))
         draw(base)
 
@@ -105,10 +105,10 @@ def draw_subheader(base, data):
 
         subheadings = [
             '14 days ending {}'.format(
-                    data['date'][0].strftime(dateFormat)
+                    data['date'][27].strftime(dateFormat)
                 ),
             '14 days ending {}'.format(
-                    data['date'][27].strftime(dateFormat)
+                    data['date'][0].strftime(dateFormat)
                 )
         ]
 
@@ -137,8 +137,8 @@ def draw_totals(base, data):
         draw.fill_color = '#474747'
         
         totals = [
-            data['positive'][0] - data['positive'][13],
-            data['positive'][14] - data['positive'][27]
+            data['positive'][14] - data['positive'][27],
+            data['positive'][0] - data['positive'][13]
         ]
 
         for i in range(2):
