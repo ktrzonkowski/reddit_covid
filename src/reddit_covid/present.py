@@ -6,60 +6,72 @@ import math
 import matplotlib.pyplot as plt
 import io
 
-
-def graph(df):
-    """
-    Builds the graph of two 2 week periods of positive COVID-19 cases.
-    """
-    fig = plt.figure(frameon=False, figsize=(4., .5), dpi=100)
-    ax = fig.add_axes((0., 0., .95, 1))
-    ax.set_axis_off()
-    df.plot(
-        x='date', y='positiveIncrease', linewidth=2.0, color='blue', ax=ax)
-    plt.legend('', frameon=False)
-    f = io.BytesIO()
-    plt.savefig(f)
-    return f.getvalue()
-
 baseW = 504
 baseH = 384
+
+def graph(df):
+    posIncrease = df['positiveIncrease']
+    yticks = [
+        posIncrease.min(),
+        posIncrease.median(),
+        posIncrease.max()
+    ]
+
+    reversed = df[::-1]
+    plt.style.use('seaborn')
+    plt.stackplot(reversed['date'],
+                  reversed['positiveIncrease'], color='#d38fc5')
+    plt.tick_params(
+        axis='x',          # changes apply to the x-axis
+        which='both',      # both major and minor ticks are affected
+        bottom=False,      # ticks along the bottom edge are off
+        top=False,         # ticks along the top edge are off
+        labelbottom=False)  # labels along the bottom edge are off
+    plt.tick_params(
+        axis='y',
+        which='both',
+        labelleft=False,
+        labelright=True
+    )
+    plt.gcf().set_size_inches(4, 3)
+
+    f = io.BytesIO()
+    plt.savefig(f, bbox_inches='tight')
+    return f.getvalue()
 
 headerH = math.floor(baseH/8)
 subheaderH = math.floor(baseH/10)
 
-def build_image(graph_blob, df):
+def build_image(graph_blob, conf):
     """
     Using the graph data from before, and the data frame we want to build an
     easily digestible image showing key metrics to help assess current status.
     """
-    firstDate = df['date'][0]
-    lastDate = df['date'][28]
-
     with Image(width=baseW, height=baseH, background='#ffffff') as base:
         with Image(blob=graph_blob) as grph:
             base.composite(grph, math.floor(
-                baseW / 8), math.floor(baseH / 2))
+                baseW / 7), math.floor(baseH / 5))
 
         draw_header(base)
         draw_subheader(base, firstDate, lastDate)
 
         base.format = 'png'
-        base.save(filename='fig.png')
+        base.save(filename=f"fig-{conf['name'].replace(' ','_')}.png")
 
 
-def draw_header(base):
+def draw_header(base, conf):
 
     # Draw a header background.
     with Drawing() as draw:
-        draw.fill_color = '#32B332'
-        draw.rectangle(left=0, top=0, width=baseW, height=headerH)
+        draw.fill_color = '#d38fc5'
+        draw.rectangle(left=0, top=0, width=baseW, height=math.floor(baseH/8))
         draw(base)
 
     # Layer header text ontop of background.
     with Drawing() as draw:
-        fontSize = 20
+        fontSize = 24
 
-        heading = "COVID-19 in North Carolina: Daily Case Increases"
+        heading = f"COVID-19 in {conf['name']}: New Cases Daily"
 
         (verticalAlign, horizontalAlign) = calculate_alignment(base, draw, headerH, baseW, heading)
 
